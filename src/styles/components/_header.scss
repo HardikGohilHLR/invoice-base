@@ -1,0 +1,111 @@
+// Header
+.ib_header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px 0;
+    &-title {
+        h1 {
+            font-size: 3.6em;
+            line-height: 40px;
+            color: #191919;
+        }
+        span {
+            font-size: 1.6em;
+            line-height: 20px;
+            color: #191919;
+        }
+    }
+
+    &-filters {
+        display: flex;
+        align-items: center;
+        span {
+            font-size: 1.6em;
+            line-height: 20px;
+            color: #191919;
+        }
+        &__current {
+            margin-right: 20px;
+            span {
+                text-transform: capitalize;                            
+                background-color: #485fc7;
+                color: #fff;
+                display: block;
+                padding: 0 10px;
+                border-radius: 5px;
+                height: 30px;
+                line-height: 30px;
+            }
+            i {
+                cursor: pointer;
+            }
+        }
+        &__dropdown {
+            margin-right: 20px;
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+            span {
+                display: flex;
+                align-items: center;
+                i {
+                    display: block;
+                    margin-left: 5px;
+                }
+            }
+        }
+        &__menu {
+            position: absolute;      
+            background: #FFFFFF;           
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19); 
+            display: none;
+            left: 0;            
+            top: 30px;
+            width: 100%;
+
+            &.active {
+                display: block;
+            }
+            li {
+                font-size: 1.6em;
+                line-height: 20px;
+                padding: 5px 10px;
+                cursor: pointer;
+                color: #191919;
+                background: #FFFFFF;
+
+                &:hover {
+                    background: #485fc7;
+                    color: #FFFFFF;
+                }
+            }
+        }
+
+    }
+    &-add-invoice {
+        font-size: 1.6em;
+        line-height: 30px;
+        color: #FFFFFF;
+        display: flex;
+        align-items: center;
+        background: #485fc7;
+        padding: 10px 20px 10px 10px;
+        border-radius: 50px;
+        cursor: pointer;
+        span {
+            margin-right: 10px;
+            background-color: #FFFFFF;
+            border-radius: 50%;
+            padding: 5px;
+            width: 30px;
+            height: 30px;
+            i {
+                font-size: 0.8em;
+                color: #485fc7;
+            }
+        }
+    }
+}

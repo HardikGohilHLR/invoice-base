@@ -1,6 +1,14 @@
+// APP
+import React from 'react';
+
+// Components
+import AppInvoice from './app-invoice';
+
 const App = () => {
 	return (
-		<h1>Invoice base</h1>
+		<React.Fragment>
+			<AppInvoice />
+		</React.Fragment>
 	);
 }
 
