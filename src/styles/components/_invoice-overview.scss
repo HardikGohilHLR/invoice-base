@@ -1,0 +1,69 @@
+// Invoice Overview
+.ib_invoice-overview {   
+    padding: 25px 30px;
+    margin-bottom: 15px;
+    border-radius: 20px;
+    background-color: #1e2139;
+    display: flex;
+    align-items: center;
+
+    &-left {
+        flex: 1 1 auto; 
+    }
+    span {
+        display: block;
+        font-size: 1.6em;
+        line-height: 20px;
+        color: #FFFFFF;
+        max-width: 200px;
+        width: 100%;
+        flex-shrink: 0;
+    }
+}
+
+// Status Tag
+.ib_invoice-status {
+       
+    &-tag {
+        flex-shrink: 0; 
+        position: relative;
+        padding: 5px 10px 5px 25px;
+        border-radius: 3px;
+        
+        &::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            position: absolute;
+            left: 10px;
+        }
+        span {
+            text-transform: capitalize;
+        }
+    }
+
+    &-pending {       
+        color: #ff8f00;
+        background-color: rgba(255, 145, 0, 0.1); 
+        &::before {
+            background-color: #ff8f00;
+        }
+    }
+    &-draft {   
+        color: #dfe3fa;
+        background-color: rgba(223, 227, 250, 0.1);     
+        &::before {
+            background-color: #dfe3fa;
+        }
+    }
+    &-paid {  
+        color: #33d69f;
+        background-color: rgba(51, 214, 160, 0.1);      
+        &::before {
+            background-color: #33d69f;
+        }
+    }
+}

@@ -31,14 +31,20 @@
                 text-transform: capitalize;                            
                 background-color: #485fc7;
                 color: #fff;
-                display: block;
+                display: flex;
+                align-items: center;
                 padding: 0 10px;
                 border-radius: 5px;
                 height: 30px;
                 line-height: 30px;
+                font-size: 1.4em;
             }
             i {
                 cursor: pointer;
+                font-size: 0.9em;
+                display: block;
+                line-height: 30px;
+                margin-left: 5px;
             }
         }
         &__dropdown {
@@ -72,7 +78,7 @@
             li {
                 font-size: 1.6em;
                 line-height: 20px;
-                padding: 5px 10px;
+                padding: 7px 10px;
                 cursor: pointer;
                 color: #191919;
                 background: #FFFFFF;

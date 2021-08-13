@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 // Pages
 import Home from './home';
 import ViewInvoice from './view-invoice';
+import CreateInvoice from './create-invoice';
 
 const AppInvoice = () => {
     return (        
@@ -15,6 +16,7 @@ const AppInvoice = () => {
                 <Switch>       
                     <Route exact path="/" render={(props) => <Home {...props} />} />   
                     <Route exact path="/invoice/1" render={(props) => <ViewInvoice {...props} />} />  
+                    <Route exact path="/create-invoice" render={(props) => <CreateInvoice {...props} />} />  
                 </Switch>
 
             </Router>
