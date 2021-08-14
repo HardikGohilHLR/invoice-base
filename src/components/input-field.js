@@ -5,8 +5,11 @@ const InputField = (props) => {
     return (
         <React.Fragment>
             
-            <div className="ib_input">
-                <label>{props?.label}</label>
+            <div className={`ib_input ${props?.className}`}>
+                {
+                    props?.label &&
+                    <label>{props?.label}</label>
+                }
                 
                 {
                     props?.children

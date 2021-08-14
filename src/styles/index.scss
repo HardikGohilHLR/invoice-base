@@ -1,52 +1,9 @@
-
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rubik', sans-serif; }
-ol, ul { list-style: none; } 
-body { overflow-x: hidden; font-size: 62.5%; }
-a { display: inline-block; text-decoration: none; }
-img { width: 100%; font-size: 0; }
-input { outline: none; }
-button { background: none; outline: none; border: none; }
-
-.ib_container {
-    max-width: 1140px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-.ib_flex {
-    display: flex;
-}
-.ib_align-center {
-    align-items: center;
-}
-
-p { 
-    font-size: 1.6em;
-    line-height: 20px;
-}
-
-.ib_row {    
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0 -10px;
-}
-.ib_col-12 {
-    flex: 0 0 auto;
-    width: 100%;
-    padding: 0 10px;
-}
-.ib_col-6 {
-    flex: 0 0 auto;
-    width: 50%;
-    padding: 0 10px;
-}
-.ib_col-4 {
-    flex: 0 0 auto;
-    width: 33.33%;
-    padding: 0 10px;
-}
+// Common
+@import '../styles/common/common'; /* Common css */
+@import '../styles/common/mixins'; /* Mixins */
 
 // Components
 @import '../styles/components/input'; /* Invoice Overview */
 @import '../styles/components/header'; /* Header */
 @import '../styles/components/invoice-overview'; /* Invoice Overview */
+@import '../styles/components/create-invoice'; /* Create Invoice */

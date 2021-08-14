@@ -1,0 +1,23 @@
+// Create Invoice
+.ib_input-group {
+    &__header {
+        p {
+            font-size: 1.6em;
+            line-height: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+    } 
+}
+
+.ib_content-form {
+    margin-bottom: 10px;
+}
+
+.ib_add-product {    
+    &__delete {
+        font-size: 1.6em;
+        line-height: 20px;
+        cursor: pointer;
+    }
+}

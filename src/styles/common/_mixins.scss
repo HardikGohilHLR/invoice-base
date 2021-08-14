@@ -1,1 +1,20 @@
 // Mixins
+@for $i from 1 through 12 {
+    .ib_col-#{$i} {
+        flex: 0 0 auto;
+        width: percentage($i / 12);
+        padding: 0 10px;
+    }
+}
+
+@for $i from 0 through 30 {
+    .ib_mr-#{$i} { 
+        margin-right: $i+px;
+    }
+    .ib_mb-#{$i} { 
+        margin-bottom: $i+px !important;
+    }
+    .ib_mt-#{$i} { 
+        margin-top: $i+px !important;
+    }
+}
