@@ -24,6 +24,8 @@ const InvoiceOverview = () => {
                                 <span class="ib_invoice-due-date">{dateTimeFormat(invoice.paymentDueDate, 'MMM DD, YYYY')}</span>
                                 <span class="ib_invoice-person">{invoice.clientName}</span>
                                 <span class="ib_invoice-total-amount">{invoice.total}</span>
+                                <span class="ib_invoice-preview">{invoice.total}</span>
+                                
                             </div>
                             <StatusTag title={invoice.status} />
                         </div>

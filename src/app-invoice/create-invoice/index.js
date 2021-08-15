@@ -1,13 +1,19 @@
 // Create Invoice
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { dateTimeFormat } from '../../common/functions';
+import { useForceUpdate } from '../../common/hooks/useForceUpdate';
 
+// Packages
 import moment from 'moment';
+import Validator from 'simple-react-validator';
+
 // Components
 import InputField from '../../components/input-field';
 
 const CreateInvoice = () => {
+    const forceUpdate = useForceUpdate(); 
+    const validator = useRef(new Validator({ element: message => <>{message}</>, autoForceUpdate: {forceUpdate} })); 
 
     const [fieldValues, setFieldValues] = useState({
         streetAddress: '',
@@ -21,13 +27,13 @@ const CreateInvoice = () => {
         clientZip: '',
         clientCountry: '',
         invoiceDate: new Date(),
-        paymentDue: '',
-        paymentTerms: '',
+        paymentDue: moment(this?.invoiceDate).add(30, 'days'),
+        paymentTerms: 30,
         productDesc: '',
         products: [
-            { name: 'products 1', qty: '', price: '', total: 0 },
-            { name: 'products 2', qty: '', price: '', total: 0 },
-            { name: 'products 3', qty: '', price: '', total: 0 },
+            { name: '', qty: null, price: null, total: 0 },
+            { name: '', qty: null, price: null, total: 0 },
+            { name: '', qty: null, price: null, total: 0 },
         ]
     });
 
@@ -41,7 +47,7 @@ const CreateInvoice = () => {
         },
         addNewProduct: () => {
             let data = [...fieldValues?.products];
-            data.push({ name: '', qty: '', price: '', total: 0 });
+            data.push({ name: '', qty: null, price: null, total: 0 });
             setFieldValues({...fieldValues, products: data});
         },
         deleteProduct: (index) => { 
@@ -68,6 +74,18 @@ const CreateInvoice = () => {
         return subTotal;
     }
 
+    const createInvoie = () => {
+        if (validator?.current?.allValid()) { 
+            console.log('if');
+        } else {
+            validator?.current?.showMessages();  
+        }
+    }
+
+    const saveDraft = () => {
+
+    }
+
     return (
         <React.Fragment>
             
@@ -89,21 +107,21 @@ const CreateInvoice = () => {
                         
                         <div className="ib_row">
                             <div className="ib_col-12">
-                                <InputField label="Street Address"> 
-                                    <textarea name="streetAddress" value={fieldValues?.streetAddress} onChange={handle.change}/>                        
+                                <InputField label="Street Address" hasError={validator?.current?.message('streetAddress', fieldValues?.streetAddress, 'required')}> 
+                                    <textarea name="streetAddress" value={fieldValues?.streetAddress} onChange={handle.change}/>                  
                                 </InputField> 
                             </div>
                         </div>
 
                         <div className="ib_row">
                             <div className="ib_col-4">
-                                <InputField label="city">
-                                    <input type="text" name="city" value={fieldValues?.city} onChange={handle.change}/>                             
+                                <InputField label="city" hasError={validator?.current?.message('city', fieldValues?.city, 'required')}>
+                                    <input type="text" name="city" value={fieldValues?.city} onChange={handle.change}/>                            
                                 </InputField> 
                             </div>                                
                             <div className="ib_col-4">
-                                <InputField label="Zip Code">
-                                    <input type="text" name="zip" value={fieldValues?.zip} onChange={handle.change}/>                             
+                                <InputField label="Zip Code" hasError={validator?.current?.message('zipCode', fieldValues?.zip, 'numeric|min:0,num|required')}>
+                                    <input type="text" name="zip" value={fieldValues?.zip} onChange={handle.change}/>                                    
                                 </InputField>
                             </div>                                
                             <div className="ib_col-4">
@@ -120,39 +138,45 @@ const CreateInvoice = () => {
                         </div>
 
                         <div className="ib_row">
-                            <div className="ib_col-6">
-                                <InputField label="Name"> 
-                                    <input type="text" name="clientName" value={fieldValues?.clientName} onChange={handle.change}/>                          
+                            <div className="ib_col-4">
+                                <InputField label="Name" hasError={validator?.current?.message('name', fieldValues?.clientName, 'required')}> 
+                                    <input type="text" name="clientName" value={fieldValues?.clientName} onChange={handle.change}/>    
                                 </InputField> 
                             </div>     
 
-                            <div className="ib_col-6">
-                                <InputField label="Email">
-                                    <input type="text" name="clientEmail" value={fieldValues?.clientEmail} onChange={handle.change}/>                             
+                            <div className="ib_col-4">
+                                <InputField label="Email" hasError={validator?.current?.message('email', fieldValues?.clientEmail, 'email|required')}>
+                                    <input type="email" name="clientEmail" value={fieldValues?.clientEmail} onChange={handle.change}/>                                
                                 </InputField>
                             </div>  
+
+                            <div className="ib_col-4">
+                                <InputField label="Invoice Date">
+                                    <input type="text" disabled value={dateTimeFormat(fieldValues?.invoiceDate, 'MMM DD, YYYY')}/>                             
+                                </InputField> 
+                            </div>     
                              
                             <div className="ib_col-12">
-                                <InputField label="Street Address"> 
-                                    <input type="text" name="clientStreetAddress" value={fieldValues?.clientStreetAddress} onChange={handle.change}/>                        
+                                <InputField label="Street Address" hasError={validator?.current?.message('clientStreetAddress', fieldValues?.clientStreetAddress, 'required')}>                                 
+                                    <textarea name="clientStreetAddress" value={fieldValues?.clientStreetAddress} onChange={handle.change}/>        
                                 </InputField> 
                             </div>  
  
                             <div className="ib_col-4">
-                                <InputField label="city"> 
-                                    <input type="text" name="clientCity" value={fieldValues?.clientCity} onChange={handle.change}/>  
+                                <InputField label="City" hasError={validator?.current?.message('clientCity', fieldValues?.clientCity, 'required')}> 
+                                    <input type="text" name="clientCity" value={fieldValues?.clientCity} onChange={handle.change}/>      
                                 </InputField> 
                             </div> 
 
                             <div className="ib_col-4">
-                                <InputField label="Zip Code"> 
-                                    <input type="text" name="clientZip" value={fieldValues?.clientZip} onChange={handle.change}/>    
+                                <InputField label="Zip Code" hasError={validator?.current?.message('clientZip', fieldValues?.clientZip, 'numeric|min:0,num|required')}> 
+                                    <input type="text" name="clientZip" value={fieldValues?.clientZip} onChange={handle.change}/>       
                                 </InputField>
                             </div>  
 
                             <div className="ib_col-4">
                                 <InputField label="Country"> 
-                                    <input type="text" name="clientCountry" value={fieldValues?.clientCountry} onChange={handle.change}/>                        
+                                    <input type="text" name="clientCountry" value={fieldValues?.clientCountry} onChange={handle.change}/> 
                                 </InputField>                                
                             </div>
                         </div>
@@ -161,11 +185,6 @@ const CreateInvoice = () => {
                     <div className="ib_content-form">
 
                         <div className="ib_row">
-                            <div className="ib_col-6">
-                                <InputField label="Invoice Date">
-                                    <input type="text" disabled value={dateTimeFormat(fieldValues?.invoiceDate, 'MMM DD, YYYY')}/>                             
-                                </InputField> 
-                            </div>     
 
                             <div className="ib_col-6">
                                 <InputField label="Payment Due">   
@@ -173,10 +192,9 @@ const CreateInvoice = () => {
                                 </InputField>
                             </div>  
 
-                            <div className="ib_col-12">
+                            <div className="ib_col-6">
                                 <InputField label="Payment Terms">
-                                    <select value={fieldValues?.paymentTerms} onChange={handle.paymentTermsSelect}>
-                                        <option selected disabled>Select Payment Term</option>    
+                                    <select value={fieldValues?.paymentTerms} onChange={handle.paymentTermsSelect}>  
                                         <option value="30">Next 30 days</option>    
                                         <option value="60">Next 60 days</option>    
                                     </select>                           
@@ -210,20 +228,20 @@ const CreateInvoice = () => {
                             {
                                 fieldValues?.products?.map((product, index) => {
                                     return (
-                                        <div className="ib_row ib_align-center ib_mb-10">
+                                        <div className="ib_row ib_mb-10">
                                             <div className="ib_col-6"> 
-                                                <InputField className="ib_mb-0">
-                                                    <input type="text" value={product?.name} name="name" onChange={(e) => handle.changeProduct(e, index)} /> 
-                                                </InputField> 
+                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`productName_${index}`, product?.name, 'required')}>
+                                                    <input type="text"  value={product?.name} name="name" onChange={(e) => handle.changeProduct(e, index)} /> 
+                                                </InputField>
                                             </div>     
                                             <div className="ib_col-1"> 
-                                                <InputField className="ib_mb-0">
-                                                    <input type="text" value={product?.qty} name="qty" onChange={(e) => handle.changeProduct(e, index)} /> 
+                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`qty_${index}`, product?.name, 'numeric|min:0,num|required')}>
+                                                    <input type="text" value={product?.qty} name="qty" onChange={(e) => handle.changeProduct(e, index)} />  
                                                 </InputField> 
                                             </div>   
                                             <div className="ib_col-2"> 
-                                                <InputField className="ib_mb-0">
-                                                    <input type="text" value={product?.price} name="price" onChange={(e) => handle.changeProduct(e, index)} /> 
+                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`price_${index}`, product?.name, 'numeric|min:0,num|required')}>
+                                                    <input type="text" value={product?.price} name="price" onChange={(e) => handle.changeProduct(e, index)} />    
                                                 </InputField> 
                                             </div>
                                             <div className="ib_col-2"> 
@@ -252,16 +270,16 @@ const CreateInvoice = () => {
                             </div>                               
                             <div className="ib_col-3">
                             { 
-                                fieldValues?.products?.length !== 0 && <p>Sub Total: <strong>{getSubTotal()}</strong></p>
+                                fieldValues?.products?.length !== 0 && getSubTotal() !== 0 && <p>Sub Total: <strong>{getSubTotal()}</strong></p>
                             }
                             </div> 
                         </div>
 
                     </div>
 
-                    <div className="ib_content-btns ib_flex ib_content-end ib_mt-15">  
-                        <button className="ib_btn ib_btn-dark ib_mr-15">Save Draft</button>
-                        <button className="ib_btn ib_btn-blue">Create Invoice</button> 
+                    <div className="ib_content-btns ib_flex ib_content-end ib_mt-15 ib_mb-20">  
+                        <button className="ib_btn ib_btn-white ib_mr-15" onClick={saveDraft}>Save Draft</button>
+                        <button className="ib_btn ib_btn-blue" onClick={createInvoie}>Create Invoice</button> 
                     </div>
 
                 </div>
