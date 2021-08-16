@@ -1,17 +1,21 @@
 // Invoice Status tag
 import React from 'react';
 
-const StatusTag = ({title, color}) => {
+const StatusTag = ({status, color}) => {
     
-    const statusColors = [
-        { value: 'pending', color: '#ff8f00'},
-        { value: 'paid', color: '#33d69f'},
-        { value: 'draft', color: '#dfe3fa'}
+    const invoiceStatuses = [
+        { value: 1, label: 'draft', color: '#dfe3fa'},
+        { value: 2, label: 'pending', color: '#ff8f00'},
+        { value: 3, label: 'paid', color: '#33d69f'},
     ];
+
+    const getInvoiceStatus = (invoiceStatus) => { 
+        return invoiceStatuses?.find(_ => _.value === invoiceStatus).label;
+    }
  
     return (
-        <div className={`ib_invoice-status-tag ib_invoice-status-${title}`}>
-            <span style={{color: statusColors?.find(_ => _.value === title).color}}>{title}</span>    
+        <div className={`ib_invoice-status-tag ib_invoice-status-${getInvoiceStatus(status)}`}>
+            <span style={{color: invoiceStatuses?.find(_ => _.value === status).color}}>{getInvoiceStatus(status)}</span>    
         </div>
     )
 }

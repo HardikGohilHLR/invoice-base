@@ -2,20 +2,19 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-const Header = () => {
+const Header = (props) => {
 
     const history = useHistory();
 
     const [filterOptions, setFilterOptions] = useState([
-        { value: 'draft', label: 'Draft' },
-        { value: 'pending', label: 'Pending' },
-        { value: 'paid', label: 'Paid' },
+        { value: 1, label: 'Draft' },
+        { value: 2, label: 'Pending' },
+        { value: 3, label: 'Paid' },
         { value: 'clear', label: 'Clear Filter' },
     ]);
 
-    const [allValues, setAllValues] = useState({
-        totalInvoices: 0,
-        activeFitler: { value: 'draft', label: 'Draft' },
+    const [allValues, setAllValues] = useState({ 
+        activeFilter: { value: 'draft', label: 'Draft' },
         isFilterMenuActive: false
     });
 
@@ -24,14 +23,16 @@ const Header = () => {
             setAllValues({...allValues, isFilterMenuActive: !allValues?.isFilterMenuActive});
         },
         selectFilter: (filter) => {
-            if(filter?.value === 'clear') {
-                handle.clearFilter();
+            if(filter?.value === 'clear') { 
+                handle.clearFilter(filter); 
             } else {
-                setAllValues({...allValues, activeFitler: filter, isFilterMenuActive: false});
+                setAllValues({...allValues, activeFilter: filter, isFilterMenuActive: false});
             }
+            props?.filterInvoices(filter);
         },
-        clearFilter: () => {
-            setAllValues({...allValues, activeFitler: '', isFilterMenuActive: false});
+        clearFilter: (filter) => {
+            props?.filterInvoices(filter);
+            setAllValues({...allValues, activeFilter: '', isFilterMenuActive: false});
         },
         createInvoice: () => {
             history.push('/create-invoice');
@@ -44,14 +45,14 @@ const Header = () => {
 
                 <div className="ib_header-title">
                     <h1>Invoices</h1>
-                    <span>There are {allValues?.totalInvoices} total invoices</span>
+                    <span>There are {props?.totalInvoices} total invoices</span>
                 </div>
 
                 <div className="ib_header-filters">
                     {
-                        allValues?.activeFitler &&
+                        allValues?.activeFilter &&
                         <div className="ib_header-filters__current">
-                            <span> {allValues?.activeFitler?.label} <i className="fal fa-times" onClick={handle.clearFilter}></i></span>
+                            <span> {allValues?.activeFilter?.label} <i className="fal fa-times" onClick={() => handle.clearFilter({value: 'clear'})}></i></span>
                         </div>
                     }
                     <div className="ib_header-filters__dropdown">
