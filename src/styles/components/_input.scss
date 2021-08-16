@@ -49,17 +49,23 @@
     cursor: pointer;
 
     &-blue {
-        background: #485fc7;
+        background-color: #485fc7;
     }
     &-dark {
-        background: #252945;
+        background-color: #252945;
     }
     &-red {
-        background: #ec5757;
+        background-color: #ec5757;
     }
     &-white {
-        background: #FFFFFF;
+        background-color: #FFFFFF;
         color: #191919;
+    }
+    &-green {
+        background-color: #33d69f;
+    }
+    &-orange {        
+        background-color: #ff8f00;
     }
 }
 

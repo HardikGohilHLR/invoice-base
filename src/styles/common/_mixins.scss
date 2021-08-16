@@ -17,4 +17,7 @@
     .ib_mt-#{$i} { 
         margin-top: $i+px !important;
     }
+    .ib_ml-#{$i} { 
+        margin-left: $i+px !important;
+    }
 }
