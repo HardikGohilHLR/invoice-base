@@ -19,13 +19,13 @@ const InvoiceOverview = (props) => {
                     return (
                         <div className="ib_invoice-overview"> 
                             <div className="ib_invoice-overview-left ib_flex ib_align-center">
-                                <span class="ib_invoice-tracking-number">#{invoice?.invoiceId}</span>
-                                <span class="ib_invoice-due-date">{dateTimeFormat(invoice?.invoiceDate.toDate(), 'MMM DD, YYYY')}</span>
-                                <span class="ib_invoice-person">{invoice?.clientName}</span>
-                                <span class="ib_invoice-total-amount">{invoice?.invoiceTotal}</span>                                
+                                <span className="ib_invoice-tracking-number">#{invoice?.invoiceId}</span>
+                                <span className="ib_invoice-due-date">{dateTimeFormat(invoice?.invoiceDate.toDate(), 'MMM DD, YYYY')}</span>
+                                <span className="ib_invoice-person">{invoice?.clientName}</span>
+                                <span className="ib_invoice-total-amount">{invoice?.invoiceTotal}</span>                                
                             </div>
                             <StatusTag status={invoice.invoiceStatus} />
-                            <span class="ib_invoice-preview" onClick={() => viewInvoice(invoice?.invoiceId)}><i class="far fa-arrow-right"></i></span>
+                            <span className="ib_invoice-preview" onClick={() => viewInvoice(invoice?.invoiceId)}><i className="far fa-arrow-right"></i></span>
                         </div>
                     )
                 })

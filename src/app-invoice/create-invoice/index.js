@@ -4,14 +4,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import { dateTimeFormat } from '../../common/functions';
 import { useForceUpdate } from '../../common/hooks/useForceUpdate';
 
+import db from '../../firebase/firebaseInit';
+
 // Packages
 import moment from 'moment';
 import Validator from 'simple-react-validator';
 
 // Components
 import InputField from '../../components/input-field';
+import { useHistory } from 'react-router-dom';
 
 const CreateInvoice = () => {
+    const history = useHistory();
     const forceUpdate = useForceUpdate(); 
     const validator = useRef(new Validator({ element: message => <>{message}</>, autoForceUpdate: {forceUpdate} })); 
 
@@ -27,7 +31,7 @@ const CreateInvoice = () => {
         clientZip: '',
         clientCountry: '',
         invoiceDate: new Date(),
-        paymentDue: moment(this?.invoiceDate).add(30, 'days'),
+        paymentDue: new Date(moment(this?.invoiceDate).add(30, 'days')),
         paymentTerms: 30,
         productDesc: '',
         products: [
@@ -36,13 +40,17 @@ const CreateInvoice = () => {
             { name: '', qty: null, price: null, total: 0 },
         ]
     });
+    const [allValues, setAllValues] = useState({
+        draftInvoiceLoading: false,
+        createInvoiceLoading: false,
+    });
 
     const handle = {
         change: (e) => {
             setFieldValues({...fieldValues, [e.target.name]: e?.target?.value});
         },
         paymentTermsSelect: (e) => {
-            let paymentDueDate = moment(fieldValues?.invoiceDate).add(parseInt(e?.target?.value), 'days'); 
+            let paymentDueDate = new Date(moment(fieldValues?.invoiceDate).add(parseInt(e?.target?.value), 'days').format()); 
             setFieldValues({...fieldValues, paymentDue: paymentDueDate, paymentTerms: e?.target?.value});
         },
         addNewProduct: () => {
@@ -51,6 +59,7 @@ const CreateInvoice = () => {
             setFieldValues({...fieldValues, products: data});
         },
         deleteProduct: (index) => { 
+            validator?.current?.purgeFields();
             let products = [...fieldValues?.products];
             products.splice(index, 1); 
             setFieldValues({...fieldValues, products: products});
@@ -76,26 +85,46 @@ const CreateInvoice = () => {
 
     const createInvoie = () => {
         if (validator?.current?.allValid()) { 
-            console.log('if');
+            setAllValues({...allValues, createInvoiceLoading: true});
+            console.log({...fieldValues});
+            db.collection('invoices').add({
+                ...fieldValues,
+                invoiceStatus: 2,
+                invoiceId: Math.floor(Math.random()*16777215).toString(16),
+                invoiceTotal: getSubTotal()
+            }).then(() => {  
+                setAllValues({...allValues, createInvoiceLoading: false});
+                validator?.current?.hideMessages(); 
+            }).catch(e => { console.log(e); setAllValues({...allValues, createInvoiceLoading: false}); })
         } else {
+            console.log(validator?.current?.errorMessages);
+            console.log(validator?.current);
             validator?.current?.showMessages();  
         }
     }
 
     const saveDraft = () => {
-
+        setAllValues({...allValues, createInvoiceLoading: false});
     }
 
     return (
         <React.Fragment>
             
             <div className="ib_container"> 
+
                 <div className="ib_header">
 
                     <div className="ib_header-title">
                         <h1>New Invoice</h1> 
                     </div>
 
+                </div>
+                
+                <div className="ib_view-invoice__goback">
+                    <span className="ib_flex ib_align-center" onClick={() => history.goBack()}>
+                        <i className="far fa-chevron-left"></i>
+                        Go back
+                    </span>
                 </div>
 
                 <div className="ib_create-invoice">
@@ -231,16 +260,16 @@ const CreateInvoice = () => {
                                         <div className="ib_row ib_mb-10">
                                             <div className="ib_col-6"> 
                                                 <InputField className="ib_mb-0" hasError={validator?.current?.message(`productName_${index}`, product?.name, 'required')}>
-                                                    <input type="text"  value={product?.name} name="name" onChange={(e) => handle.changeProduct(e, index)} /> 
+                                                    <input type="text" value={product?.name} name="name" onChange={(e) => handle.changeProduct(e, index)} /> 
                                                 </InputField>
                                             </div>     
                                             <div className="ib_col-1"> 
-                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`qty_${index}`, product?.name, 'numeric|min:0,num|required')}>
+                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`qty_${index}`, product?.name, 'required')}>
                                                     <input type="text" value={product?.qty} name="qty" onChange={(e) => handle.changeProduct(e, index)} />  
                                                 </InputField> 
                                             </div>   
                                             <div className="ib_col-2"> 
-                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`price_${index}`, product?.name, 'numeric|min:0,num|required')}>
+                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`price_${index}`, product?.name, 'required')}>
                                                     <input type="text" value={product?.price} name="price" onChange={(e) => handle.changeProduct(e, index)} />    
                                                 </InputField> 
                                             </div>
@@ -278,8 +307,14 @@ const CreateInvoice = () => {
                     </div>
 
                     <div className="ib_content-btns ib_flex ib_content-end ib_mt-15 ib_mb-20">  
-                        <button className="ib_btn ib_btn-white ib_mr-15" onClick={saveDraft}>Save Draft</button>
-                        <button className="ib_btn ib_btn-blue" onClick={createInvoie}>Create Invoice</button> 
+                        <button className={`ib_btn ib_btn-white ib_mr-15 ${allValues?.draftInvoiceLoading ? 'ib_btn-loading' : ''}`} onClick={saveDraft}>
+                            <span className="ib_btn-loader"><img src="/images/spinner.svg" /></span>
+                            Save Draft
+                        </button>
+                        <button className={`ib_btn ib_btn-blue ${allValues?.createInvoiceLoading ? 'ib_btn-loading' : ''}`} onClick={createInvoie}>
+                            <span className="ib_btn-loader"><img src="/images/spinner.svg" /></span>
+                            Create Invoice
+                        </button> 
                     </div>
 
                 </div>

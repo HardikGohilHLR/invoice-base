@@ -15,7 +15,7 @@ const AppInvoice = () => {
                 
                 <Switch>       
                     <Route exact path="/" render={(props) => <Home {...props} />} />   
-                    <Route exact path="/invoice/:trackingId" render={(props) => <ViewInvoice {...props} />} />  
+                    <Route exact path="/invoice/:invoiceId" render={(props) => <ViewInvoice {...props} />} />  
                     <Route exact path="/create-invoice" render={(props) => <CreateInvoice {...props} />} />  
                 </Switch>
 
