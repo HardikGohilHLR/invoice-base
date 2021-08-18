@@ -13,6 +13,10 @@ const ViewInvoice = () => {
     const { invoiceId } = useParams();
 
     const [invoice, setInvoice] = useState({});
+    const [allValues, setAllValues] = useState({
+        loading: false,
+        deleteLoading: false
+    });
 
     useEffect(() => {
         getInvoice();        
@@ -21,9 +25,8 @@ const ViewInvoice = () => {
     const getInvoice = async () => {
         const response = db.collection('invoices');
         const data = await response.where('invoiceId', '==', invoiceId).get();
-        data.forEach(doc => {
-            setInvoice(doc.data());
-            console.log(doc.data());
+        data.forEach(doc => { 
+            setInvoice({...doc.data(), _id: doc.id});
         });
     }
 
@@ -31,16 +34,22 @@ const ViewInvoice = () => {
         toggleEditInvoice: () => {
 
         },
-        deleteInvoice: () => {
-
-        },
-        updateStatusToPaid: () => {
-
-        },
-        updateStatusToPending: () => {
-
+        deleteInvoice: async () => {
+            setAllValues({...allValues, deleteLoading: true});
+            const response = await db.collection('invoices').doc(invoice._id).delete();
+            history.push('/');
         }
     }
+
+    const updateStatus = async (status) => {
+        setAllValues({...allValues, loading: true});
+        const response = db.collection('invoices').doc(invoice._id); 
+        const data = await response.update({invoiceStatus: status});  
+        getInvoice().then(() => {            
+            setAllValues({...allValues, loading: false});
+        });
+    }
+
     return (
         <React.Fragment>
             <div className="ib_view-invoice ib_container"> 
@@ -69,15 +78,24 @@ const ViewInvoice = () => {
                         {
                             invoice?.invoiceStatus !== 3 &&
                             <button onClick={handle.toggleEditInvoice} className="ib_btn ib_btn-dark">Edit</button>
-                        }                      
-                        <button onClick={handle.deleteInvoice} className="ib_btn ib_btn-red ib_ml-10">Delete</button>
+                        }                       
+                        <button className={`ib_btn ib_btn-red ib_ml-10 ${allValues?.deleteLoading ? 'ib_btn-loading' : ''}`} onClick={handle.deleteInvoice}>
+                            <span className="ib_btn-loader"><img src="/images/spinner.svg" /></span>
+                            Delete
+                        </button>  
                         {
                             invoice?.invoiceStatus === 2 &&
-                            <button onClick={handle.updateStatusToPaid} className="ib_btn ib_btn-green ib_ml-10"> Mark as Paid</button>
+                            <button className={`ib_btn ib_btn-green ib_ml-10 ${allValues?.loading ? 'ib_btn-loading' : ''}`} onClick={() => updateStatus(3)}>
+                                <span className="ib_btn-loader"><img src="/images/spinner.svg" /></span>
+                                Mark as Paid
+                            </button>  
                         }
                         {                            
                             invoice?.invoiceStatus === 1 &&
-                            <button onClick={handle.updateStatusToPending} className="ib_btn ib_btn-orange ib_ml-10"> Mark as Pending</button>
+                            <button className={`ib_btn ib_btn-orange ib_ml-10 ${allValues?.loading ? 'ib_btn-loading' : ''}`} onClick={() => updateStatus(2)}>
+                                <span className="ib_btn-loader"><img src="/images/spinner.svg" /></span>
+                                Mark as Pending
+                            </button> 
                         }
                     </div>             
                 </div> 
@@ -94,8 +112,10 @@ const ViewInvoice = () => {
                         <div className="ib_view-invoice__block ib_pr-0">
                             <ul className="ib_text-right">
                                 <li>{invoice?.streetAddress},</li>
-                                <li>{invoice?.zip}, {invoice?.city}</li> 
-                                <li>{invoice?.country}.</li>
+                                <li>{invoice?.zip}, {invoice?.city}</li>  
+                                { invoice?.country && 
+                                    <li>{invoice?.country}.</li>
+                                }
                             </ul>
                         </div> 
                     </div>
@@ -105,12 +125,12 @@ const ViewInvoice = () => {
                         <div className="ib_flex ib_flex-column ib_view-invoice__block"> 
                             <div className="ib_view-invoice__block-inner">
                                 <p>Invoice Date</p> 
-                                <h2>{dateTimeFormat(invoice?.invoiceDate.toDate(), 'DD MMM YYYY')}</h2>
+                                <h2>{dateTimeFormat(invoice?.invoiceDate?.toDate(), 'DD MMM YYYY')}</h2>
                             </div>
                         
                             <div className="ib_view-invoice__block-inner">
                                 <p>Payment Due</p>
-                                <h2>{dateTimeFormat(invoice?.paymentDue.toDate(), 'DD MMM YYYY')}</h2>
+                                <h2>{dateTimeFormat(invoice?.paymentDue?.toDate(), 'DD MMM YYYY')}</h2>
                             </div>
                         </div>
 
@@ -121,7 +141,9 @@ const ViewInvoice = () => {
                             <ul>
                                 <li>{invoice?.clientStreetAddress},</li>
                                 <li>{invoice?.clientZip}, {invoice?.clientCity}</li> 
-                                <li>{invoice?.clientCountry}.</li>
+                                { invoice?.clientCountry && 
+                                    <li>{invoice?.clientCountry}.</li>
+                                }
                             </ul>
                         </div>
                         

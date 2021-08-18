@@ -53,7 +53,14 @@ const Home = () => {
                 <Header totalInvoices={allValues?.totalInvoices} filterInvoices={filterInvoices} />
 
                 {/* Invoice Listing */}
-                <InvoiceOverview invoiceData={invoiceData} />
+                {
+                    invoiceData?.length ? 
+                        <InvoiceOverview invoiceData={invoiceData} />
+                    : 
+                    <div className="ib_invoice-overview ib_flex ib_content-center">
+                        <p>No Invoice Found.</p>
+                    </div>
+                }
             
             </div>
 

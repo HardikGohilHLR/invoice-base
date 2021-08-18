@@ -28,10 +28,10 @@ const InvoiceOverview = (props) => {
                 {
                     props?.invoiceData?.map(invoice => {
                         return (
-                            <div className="ib_invoice-overview"> 
+                            <div className="ib_invoice-overview" key={invoice?.invoiceId}> 
                                 <div className="ib_invoice-overview-left ib_flex ib_align-center">
                                     <span className="ib_invoice-tracking-number">#{invoice?.invoiceId}</span>
-                                    <span className="ib_invoice-due-date">{dateTimeFormat(invoice?.invoiceDate.toDate(), 'MMM DD, YYYY')}</span>
+                                    <span className="ib_invoice-due-date">{dateTimeFormat(invoice?.invoiceDate?.toDate(), 'MMM DD, YYYY')}</span>
                                     <span className="ib_invoice-person">{invoice?.clientName}</span>
                                     <span className="ib_invoice-total-amount">{invoice?.invoiceTotal}</span>                                
                                 </div>
