@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
+import { dateTimeFormat } from '../../common/functions';
 import db from '../../firebase/firebaseInit';
 
 // Components
@@ -81,7 +82,54 @@ const ViewInvoice = () => {
                     </div>             
                 </div> 
 
-                <div className="ib_view-invoice__body ib_flex ib_align-center">
+                <div className="ib_view-invoice__body">
+
+                    
+                    <div className="ib_view-invoice__sender ib_flex ib_content-between ib_mb-30">                        
+                        <div className="ib_view-invoice__block">
+                            <h1>#{invoice?.invoiceId}</h1>
+                            <p>{invoice?.productDesc}</p> 
+                        </div>
+                    
+                        <div className="ib_view-invoice__block ib_pr-0">
+                            <ul className="ib_text-right">
+                                <li>{invoice?.streetAddress},</li>
+                                <li>{invoice?.zip}, {invoice?.city}</li> 
+                                <li>{invoice?.country}.</li>
+                            </ul>
+                        </div> 
+                    </div>
+
+                    <div className="ib_view-invoice__content ib_pt-10">
+                        
+                        <div className="ib_flex ib_flex-column ib_view-invoice__block"> 
+                            <div className="ib_view-invoice__block-inner">
+                                <p>Invoice Date</p> 
+                                <h2>{dateTimeFormat(invoice?.invoiceDate.toDate(), 'DD MMM YYYY')}</h2>
+                            </div>
+                        
+                            <div className="ib_view-invoice__block-inner">
+                                <p>Payment Due</p>
+                                <h2>{dateTimeFormat(invoice?.paymentDue.toDate(), 'DD MMM YYYY')}</h2>
+                            </div>
+                        </div>
+
+                        <div className="ib_view-invoice__block">
+                            <p>Bill to</p>
+                            <h2>{invoice?.clientName}</h2>
+
+                            <ul>
+                                <li>{invoice?.clientStreetAddress},</li>
+                                <li>{invoice?.clientZip}, {invoice?.clientCity}</li> 
+                                <li>{invoice?.clientCountry}.</li>
+                            </ul>
+                        </div>
+                        
+                        <div className="ib_view-invoice__block">
+                            <p>Sent to</p>
+                            <h2>{invoice?.clientEmail}</h2>
+                        </div>
+                    </div>
                 
                     <div className="ib_view-invoice__products">
                         <table>

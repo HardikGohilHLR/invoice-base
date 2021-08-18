@@ -32,9 +32,14 @@ label {
 
 // Flex Classes
 .ib_flex { display: flex; } 
+.ib_flex-column { flex-direction: column; } 
 .ib_align-center { align-items: center; }
 .ib_content-end { justify-content: flex-end; }
 .ib_content-center { justify-content: center; }
+.ib_content-between { justify-content: space-between; }
+
+
+.ib_text-right { text-align: right; }
 
 // Grid CSS  
 .ib_row {    

@@ -20,4 +20,10 @@
     .ib_ml-#{$i} { 
         margin-left: $i+px !important;
     }
+    .ib_pt-#{$i} { 
+        padding-top: $i+px !important;
+    }
+    .ib_pr-#{$i} { 
+        padding-right: $i+px !important;
+    }
 }

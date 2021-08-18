@@ -14,6 +14,15 @@ const InvoiceOverview = (props) => {
 
     return (
         <React.Fragment>
+            <div className="ib_invoice-overview ib_invoice-overview-header"> 
+                <div className="ib_invoice-overview-left ib_flex ib_align-center">
+                    <span className="ib_invoice-tracking-number">Invoice ID</span>
+                    <span className="ib_invoice-due-date">Date</span>
+                    <span className="ib_invoice-person">Client Name</span>
+                    <span className="ib_invoice-total-amount">Total Amount</span>  
+                </div> 
+                <span className="ib_invoice-status">Status</span>                                
+            </div>
             {
                 props?.invoiceData?.map(invoice => {
                     return (

@@ -24,6 +24,16 @@
             cursor: pointer;
         }
     }
+
+    &-header {
+        span {
+            font-size: 1.4em;
+            line-height: 18px; 
+            &.ib_invoice-status {                
+                text-align: center;
+            }
+        }
+    }
 }
 
 // Status Tag
