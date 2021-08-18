@@ -44,7 +44,6 @@ const Home = () => {
         setAllValues({...allValues, totalInvoices: allInvoices?.length});
     }
 
-
     return (
        <React.Fragment>
 
@@ -53,6 +52,7 @@ const Home = () => {
                 {/* Header */}
                 <Header totalInvoices={allValues?.totalInvoices} filterInvoices={filterInvoices} />
 
+                {/* Invoice Listing */}
                 <InvoiceOverview invoiceData={invoiceData} />
             
             </div>

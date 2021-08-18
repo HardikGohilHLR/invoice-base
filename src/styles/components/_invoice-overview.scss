@@ -1,12 +1,20 @@
 // Invoice Overview
 .ib_invoice-overview {   
-    padding: 25px 30px;
+    padding: 16px 30px;
     margin-bottom: 15px;
     border-radius: 20px;
     background-color: #1e2139;
     display: flex;
     align-items: center;
+    transition: box-shadow 0.2s linear;
+    &:hover {
+        box-shadow: 0 2px 4px rgba(30, 33, 57, 0.2);
+    }
 
+    &-container {
+        padding-bottom: 20px;
+    }
+    
     &-left {
         flex: 1 1 auto; 
     }

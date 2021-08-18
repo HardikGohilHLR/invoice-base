@@ -14,7 +14,7 @@ const Header = (props) => {
     ]);
 
     const [allValues, setAllValues] = useState({ 
-        activeFilter: { value: 'draft', label: 'Draft' },
+        activeFilter: '',
         isFilterMenuActive: false
     });
 
