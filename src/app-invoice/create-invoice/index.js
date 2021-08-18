@@ -35,9 +35,9 @@ const CreateInvoice = () => {
         paymentTerms: 30,
         productDesc: '',
         products: [
-            { name: '', qty: null, price: null, total: 0 },
-            { name: '', qty: null, price: null, total: 0 },
-            { name: '', qty: null, price: null, total: 0 },
+            { name: '', qty: '', price: '', total: 0 },
+            { name: '', qty: '', price: '', total: 0 },
+            { name: '', qty: '', price: '', total: 0 },
         ]
     });
     const [allValues, setAllValues] = useState({
@@ -83,28 +83,37 @@ const CreateInvoice = () => {
         return subTotal;
     }
 
+    const getRandomId = () => {
+        return Math.floor(Math.random()*16777215).toString(16).toUpperCase();
+    }
+
     const createInvoie = () => {
         if (validator?.current?.allValid()) { 
-            setAllValues({...allValues, createInvoiceLoading: true});
-            console.log({...fieldValues});
-            db.collection('invoices').add({
-                ...fieldValues,
-                invoiceStatus: 2,
-                invoiceId: Math.floor(Math.random()*16777215).toString(16),
-                invoiceTotal: getSubTotal()
-            }).then(() => {  
+            setAllValues({...allValues, createInvoiceLoading: true});            
+            addInvoiceData(2).then(() => { 
                 setAllValues({...allValues, createInvoiceLoading: false});
                 validator?.current?.hideMessages(); 
-            }).catch(e => { console.log(e); setAllValues({...allValues, createInvoiceLoading: false}); })
+            }).catch(e => {   
+                setAllValues({...allValues, createInvoiceLoading: false}); 
+            });
         } else {
-            console.log(validator?.current?.errorMessages);
-            console.log(validator?.current);
+            document.querySelector('.ib_input-error')?.scrollIntoView();
             validator?.current?.showMessages();  
         }
     }
 
     const saveDraft = () => {
         setAllValues({...allValues, createInvoiceLoading: false});
+    }
+
+    const addInvoiceData = async (status) => {
+        const response = await db.collection('invoices').add({
+            ...fieldValues,
+            invoiceStatus: status,
+            invoiceId: getRandomId(),
+            invoiceTotal: getSubTotal()
+        });        
+        return response;        
     }
 
     return (
@@ -144,7 +153,7 @@ const CreateInvoice = () => {
 
                         <div className="ib_row">
                             <div className="ib_col-4">
-                                <InputField label="city" hasError={validator?.current?.message('city', fieldValues?.city, 'required')}>
+                                <InputField label="city" hasError={validator?.current?.message('city', fieldValues?.city, 'required|string')}>
                                     <input type="text" name="city" value={fieldValues?.city} onChange={handle.change}/>                            
                                 </InputField> 
                             </div>                                
@@ -257,7 +266,7 @@ const CreateInvoice = () => {
                             {
                                 fieldValues?.products?.map((product, index) => {
                                     return (
-                                        <div className="ib_row ib_mb-10">
+                                        <div className="ib_row ib_mb-10" key={index}>
                                             <div className="ib_col-6"> 
                                                 <InputField className="ib_mb-0" hasError={validator?.current?.message(`productName_${index}`, product?.name, 'required')}>
                                                     <input type="text" value={product?.name} name="name" onChange={(e) => handle.changeProduct(e, index)} /> 
