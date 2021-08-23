@@ -34,15 +34,12 @@ const CreateInvoice = () => {
         paymentDue: new Date(moment(this?.invoiceDate).add(30, 'days')),
         paymentTerms: 30,
         productDesc: '',
-        products: [
-            { name: '', qty: '', price: '', total: 0 },
-            { name: '', qty: '', price: '', total: 0 },
-            { name: '', qty: '', price: '', total: 0 },
-        ]
+        products: []
     });
     const [allValues, setAllValues] = useState({
         draftInvoiceLoading: false,
         createInvoiceLoading: false,
+        error: ''
     });
 
     const handle = {
@@ -55,11 +52,13 @@ const CreateInvoice = () => {
         },
         addNewProduct: () => {
             let data = [...fieldValues?.products];
-            data.push({ name: '', qty: null, price: null, total: 0 });
+            data.push({ name: '', qty: '', price: '', total: 0 });
             setFieldValues({...fieldValues, products: data});
         },
-        deleteProduct: (index) => { 
-            validator?.current?.purgeFields();
+        deleteProduct: (index) => {  
+            validator.current.fields[`productName_${index}`] = true; 
+            validator.current.fields[`price_${index}`] = true; 
+            validator.current.fields[`qty_${index}`] = true; 
             let products = [...fieldValues?.products];
             products.splice(index, 1); 
             setFieldValues({...fieldValues, products: products});
@@ -92,9 +91,10 @@ const CreateInvoice = () => {
             setAllValues({...allValues, createInvoiceLoading: true});            
             addInvoiceData(2).then(() => { 
                 setAllValues({...allValues, createInvoiceLoading: false});
-                validator?.current?.hideMessages(); 
+                validator?.current?.hideMessages();
+                history.push('/');
             }).catch(e => {   
-                setAllValues({...allValues, createInvoiceLoading: false}); 
+                setAllValues({...allValues, error: e, createInvoiceLoading: false}); 
             });
         } else {
             document.querySelector('.ib_input-error')?.scrollIntoView();
@@ -102,8 +102,20 @@ const CreateInvoice = () => {
         }
     }
 
-    const saveDraft = () => {
-        setAllValues({...allValues, createInvoiceLoading: false});
+    const saveDraft = () => {     
+        if (validator?.current?.allValid()) { 
+            setAllValues({...allValues, draftInvoiceLoading: true});            
+            addInvoiceData(1).then(() => { 
+                setAllValues({...allValues, draftInvoiceLoading: false});
+                validator?.current?.hideMessages();
+                history.push('/');
+            }).catch(e => {   
+                setAllValues({...allValues, error: e, draftInvoiceLoading: false}); 
+            });
+        } else {
+            document.querySelector('.ib_input-error')?.scrollIntoView();
+            validator?.current?.showMessages();  
+        } 
     }
 
     const addInvoiceData = async (status) => {
@@ -273,12 +285,12 @@ const CreateInvoice = () => {
                                                 </InputField>
                                             </div>     
                                             <div className="ib_col-1"> 
-                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`qty_${index}`, product?.name, 'required')}>
+                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`qty_${index}`, product?.qty, 'required')}>
                                                     <input type="text" value={product?.qty} name="qty" onChange={(e) => handle.changeProduct(e, index)} />  
                                                 </InputField> 
                                             </div>   
                                             <div className="ib_col-2"> 
-                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`price_${index}`, product?.name, 'required')}>
+                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`price_${index}`, product?.price, 'required')}>
                                                     <input type="text" value={product?.price} name="price" onChange={(e) => handle.changeProduct(e, index)} />    
                                                 </InputField> 
                                             </div>
@@ -313,6 +325,11 @@ const CreateInvoice = () => {
                             </div> 
                         </div>
 
+                    </div>
+
+
+                    <div className="ib_content-form">
+                        <p className="ib_error">{allValues?.error}</p>
                     </div>
 
                     <div className="ib_content-btns ib_flex ib_content-end ib_mt-15 ib_mb-20">  
