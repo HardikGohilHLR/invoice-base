@@ -1,5 +1,6 @@
 // Create Invoice
 import React, { useState, useEffect, useRef } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { dateTimeFormat } from '../../common/functions';
 import { useForceUpdate } from '../../common/hooks/useForceUpdate';
@@ -12,11 +13,11 @@ import Validator from 'simple-react-validator';
 
 // Components
 import InputField from '../../components/input-field';
-import { useHistory } from 'react-router-dom';
 
 const CreateInvoice = () => {
     const history = useHistory();
     const forceUpdate = useForceUpdate(); 
+    const { invoiceId } = useParams();
     const validator = useRef(new Validator({ element: message => <>{message}</>, autoForceUpdate: {forceUpdate} })); 
 
     const [fieldValues, setFieldValues] = useState({
@@ -41,6 +42,20 @@ const CreateInvoice = () => {
         createInvoiceLoading: false,
         error: ''
     });
+
+    useEffect(() => {
+        if(invoiceId) { 
+            getInvoice();
+        }
+    }, [invoiceId]);
+
+    const getInvoice = async () => {
+        const response = db.collection('invoices');
+        const data = await response.where('invoiceId', '==', invoiceId).get();
+        data.forEach(doc => { 
+            setFieldValues({...doc.data(), paymentDue: doc.data()?.paymentDue?.toDate(), invoiceDate: doc.data()?.invoiceDate?.toDate()});
+        });
+    }
 
     const handle = {
         change: (e) => {
@@ -117,6 +132,9 @@ const CreateInvoice = () => {
             validator?.current?.showMessages();  
         } 
     }
+
+    const updateInvoice =() => {}
+
 
     const addInvoiceData = async (status) => {
         const response = await db.collection('invoices').add({
@@ -236,13 +254,13 @@ const CreateInvoice = () => {
 
                         <div className="ib_row">
 
-                            <div className="ib_col-6">
+                            <div className={`ib_col-${invoiceId ? 4 : 6}`}>
                                 <InputField label="Payment Due">   
                                     <input type="text" disabled name="paymentDue" value={fieldValues?.paymentDue ? dateTimeFormat(fieldValues?.paymentDue, 'MMM DD, YYYY') : ''} onChange={handle.change}/>                          
                                 </InputField>
                             </div>  
 
-                            <div className="ib_col-6">
+                            <div className={`ib_col-${invoiceId ? 4 : 6}`}>
                                 <InputField label="Payment Terms">
                                     <select value={fieldValues?.paymentTerms} onChange={handle.paymentTermsSelect}>  
                                         <option value="30">Next 30 days</option>    
@@ -250,6 +268,19 @@ const CreateInvoice = () => {
                                     </select>                           
                                 </InputField>
                             </div>  
+
+                            {
+                                invoiceId &&
+                                <div className={`ib_col-4`}> 
+                                    <InputField label="Invoice Status">
+                                        <select value={fieldValues?.invoiceStatus}>  
+                                            <option value="1">Draft</option>    
+                                            <option value="2">Pending</option>    
+                                            <option value="3">Paid</option>    
+                                        </select>                           
+                                    </InputField>
+                                </div>  
+                            }
                              
                             <div className="ib_col-12">
                                 <InputField label="Product Description">   
@@ -333,14 +364,22 @@ const CreateInvoice = () => {
                     </div>
 
                     <div className="ib_content-btns ib_flex ib_content-end ib_mt-15 ib_mb-20">  
-                        <button className={`ib_btn ib_btn-white ib_mr-15 ${allValues?.draftInvoiceLoading ? 'ib_btn-loading' : ''}`} onClick={saveDraft}>
-                            <span className="ib_btn-loader"><img src="/images/spinner.svg" /></span>
-                            Save Draft
-                        </button>
-                        <button className={`ib_btn ib_btn-blue ${allValues?.createInvoiceLoading ? 'ib_btn-loading' : ''}`} onClick={createInvoie}>
-                            <span className="ib_btn-loader"><img src="/images/spinner.svg" /></span>
-                            Create Invoice
-                        </button> 
+                        {
+                            invoiceId ? 
+                            <button className={`ib_btn ib_btn-green ${allValues?.updateInvoiceLoading ? 'ib_btn-loading' : ''}`} onClick={updateInvoice}>
+                                <span className="ib_btn-loader"><img src="/images/spinner.svg" /></span>
+                                Update Invoice
+                            </button> 
+                            : <>
+                            <button className={`ib_btn ib_btn-blue ${allValues?.createInvoiceLoading ? 'ib_btn-loading' : ''}`} onClick={createInvoie}>
+                                <span className="ib_btn-loader"><img src="/images/spinner.svg" /></span>
+                                Create Invoice
+                            </button> 
+                            <button className={`ib_btn ib_btn-white ib_mr-15 ${allValues?.draftInvoiceLoading ? 'ib_btn-loading' : ''}`} onClick={saveDraft}>
+                                <span className="ib_btn-loader"><img src="/images/spinner.svg" /></span>
+                                Save Draft
+                            </button> </>
+                        }
                     </div>
 
                 </div>

@@ -32,7 +32,7 @@ const ViewInvoice = () => {
 
     const handle = {
         toggleEditInvoice: () => {
-
+            history.push(`/edit-invoice/${invoiceId}`);
         },
         deleteInvoice: async () => {
             setAllValues({...allValues, deleteLoading: true});
