@@ -40,6 +40,7 @@ const CreateInvoice = () => {
     const [allValues, setAllValues] = useState({
         draftInvoiceLoading: false,
         createInvoiceLoading: false,
+        updateInvoiceLoading: false,
         error: ''
     });
 
@@ -53,7 +54,7 @@ const CreateInvoice = () => {
         const response = db.collection('invoices');
         const data = await response.where('invoiceId', '==', invoiceId).get();
         data.forEach(doc => { 
-            setFieldValues({...doc.data(), paymentDue: doc.data()?.paymentDue?.toDate(), invoiceDate: doc.data()?.invoiceDate?.toDate()});
+            setFieldValues({...doc.data(), _id: doc.id, paymentDue: doc.data()?.paymentDue?.toDate(), invoiceDate: doc.data()?.invoiceDate?.toDate()});
         });
     }
 
@@ -133,8 +134,18 @@ const CreateInvoice = () => {
         } 
     }
 
-    const updateInvoice =() => {}
-
+    const updateInvoice = async () => {
+        setAllValues({...allValues, updateInvoiceLoading: true}); 
+        const response = db.collection('invoices'); 
+        const data = await response.doc(fieldValues?._id).update({...fieldValues})
+        .then(() => {
+            setAllValues({...allValues, updateInvoiceLoading: false});
+            validator?.current?.hideMessages(); 
+            history.push(`/invoice/${invoiceId}`);
+        }).catch(e => {  
+            setAllValues({...allValues, error: e, createInvoiceLoading: false}); 
+        });
+    }
 
     const addInvoiceData = async (status) => {
         const response = await db.collection('invoices').add({
@@ -273,10 +284,10 @@ const CreateInvoice = () => {
                                 invoiceId &&
                                 <div className={`ib_col-4`}> 
                                     <InputField label="Invoice Status">
-                                        <select value={fieldValues?.invoiceStatus}>  
-                                            <option value="1">Draft</option>    
-                                            <option value="2">Pending</option>    
-                                            <option value="3">Paid</option>    
+                                        <select value={fieldValues?.invoiceStatus} name="invoiceStatus" onChange={handle.change}>  
+                                            <option value={1}>Draft</option>    
+                                            <option value={2}>Pending</option>    
+                                            <option value={3}>Paid</option>    
                                         </select>                           
                                     </InputField>
                                 </div>  

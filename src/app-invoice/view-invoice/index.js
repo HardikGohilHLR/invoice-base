@@ -59,7 +59,7 @@ const ViewInvoice = () => {
                 </div>
 
                 <div className="ib_view-invoice__goback">
-                    <span className="ib_flex ib_align-center" onClick={() => history.goBack()}>
+                    <span className="ib_flex ib_align-center" onClick={() => history.push('/')}>
                         <i className="far fa-chevron-left"></i>
                         Go back
                     </span>

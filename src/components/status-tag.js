@@ -10,12 +10,12 @@ const StatusTag = ({status, color}) => {
     ];
 
     const getInvoiceStatus = (invoiceStatus) => { 
-        return invoiceStatuses?.find(_ => _.value === invoiceStatus).label;
+        return invoiceStatuses?.find(_ => _.value === parseInt(invoiceStatus)).label;
     }
  
     return (
         <div className={`ib_invoice-status-tag ib_invoice-status-${getInvoiceStatus(status)}`}>
-            <span style={{color: invoiceStatuses?.find(_ => _.value === status).color}}>{getInvoiceStatus(status)}</span>    
+            <span style={{color: invoiceStatuses?.find(_ => _.value === parseInt(status)).color}}>{getInvoiceStatus(status)}</span>    
         </div>
     )
 }
