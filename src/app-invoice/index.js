@@ -11,6 +11,15 @@ import CreateInvoice from './create-invoice';
 const AppInvoice = () => {
     return (        
         <React.Fragment>
+
+            <div className="ib_main-header">
+                <div className="ib_main-container">
+                    <div className="ib_main-header-logo">
+                        <img src="/images/invoice-base.svg" alt="Invoice Base" title="Invoice Base"/>
+                    </div>  
+                </div>  
+            </div>  
+
             <Router> 
                 
                 <Switch>       

@@ -327,12 +327,12 @@ const CreateInvoice = () => {
                                                 </InputField>
                                             </div>     
                                             <div className="ib_col-1"> 
-                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`qty_${index}`, product?.qty, 'required')}>
+                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`qty_${index}`, product?.qty, 'required|num')}>
                                                     <input type="text" value={product?.qty} name="qty" onChange={(e) => handle.changeProduct(e, index)} />  
                                                 </InputField> 
                                             </div>   
                                             <div className="ib_col-2"> 
-                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`price_${index}`, product?.price, 'required')}>
+                                                <InputField className="ib_mb-0" hasError={validator?.current?.message(`price_${index}`, product?.price, 'required|num')}>
                                                     <input type="text" value={product?.price} name="price" onChange={(e) => handle.changeProduct(e, index)} />    
                                                 </InputField> 
                                             </div>
@@ -369,7 +369,6 @@ const CreateInvoice = () => {
 
                     </div>
 
-
                     <div className="ib_content-form">
                         <p className="ib_error">{allValues?.error}</p>
                     </div>
@@ -382,14 +381,15 @@ const CreateInvoice = () => {
                                 Update Invoice
                             </button> 
                             : <>
+                            <button className={`ib_btn ib_btn-white ib_mr-15 ${allValues?.draftInvoiceLoading ? 'ib_btn-loading' : ''}`} onClick={saveDraft}>
+                                <span className="ib_btn-loader"><img src="/images/spinner.svg" /></span>
+                                Save Draft
+                            </button> 
                             <button className={`ib_btn ib_btn-blue ${allValues?.createInvoiceLoading ? 'ib_btn-loading' : ''}`} onClick={createInvoie}>
                                 <span className="ib_btn-loader"><img src="/images/spinner.svg" /></span>
                                 Create Invoice
                             </button> 
-                            <button className={`ib_btn ib_btn-white ib_mr-15 ${allValues?.draftInvoiceLoading ? 'ib_btn-loading' : ''}`} onClick={saveDraft}>
-                                <span className="ib_btn-loader"><img src="/images/spinner.svg" /></span>
-                                Save Draft
-                            </button> </>
+                            </>
                         }
                     </div>
 
