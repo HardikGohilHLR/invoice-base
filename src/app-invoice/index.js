@@ -1,7 +1,7 @@
 // Main Component
 
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom"; 
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom"; 
 
 // Pages
 import Home from './home';
@@ -12,16 +12,18 @@ const AppInvoice = () => {
     return (        
         <React.Fragment>
 
-            <div className="ib_main-header">
-                <div className="ib_main-container">
-                    <div className="ib_main-header-logo">
-                        <img src="/images/invoice-base.svg" alt="Invoice Base" title="Invoice Base"/>
-                    </div>  
-                </div>  
-            </div>  
 
             <Router> 
+                {/* Header */}
+                <div className="ib_main-header">
+                    <div className="ib_main-container">
+                        <Link className="ib_main-header-logo" to="/">
+                            <img src="/images/invoice-base.svg" alt="Invoice Base" title="Invoice Base"/>
+                        </Link>  
+                    </div>  
+                </div>  
                 
+                {/* Routes */}
                 <Switch>       
                     <Route exact path="/" render={(props) => <Home {...props} />} />   
                     <Route exact path="/invoice/:invoiceId" render={(props) => <ViewInvoice {...props} />} />  
